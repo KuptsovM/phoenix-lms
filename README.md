@@ -1,10 +1,11 @@
 # phoenix-lms
 
-## Тестовый вход в админку
+## Тестовый вход
 
-- URL: `http://localhost/admin`
-- Email: `admin@example.com`
-- Пароль: `password`
+- Админка: `http://localhost/admin`
+- Admin: `admin@example.com` / `password`
+- Teacher: `teacher@example.com` / `password`
+- Student: `student@example.com` / `password`
 
 Если нужно заново создать тестовые данные:
 

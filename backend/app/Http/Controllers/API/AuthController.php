@@ -18,34 +18,31 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Неверные учетные данные'
+                'message' => 'Неверные учетные данные.',
             ], 401);
         }
 
-        // Создаем токен (простая реализация для демонстрации)
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
             'token' => $token,
-            'user' => $user->load('roles')
+            'user' => $user->load('roles'),
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        
+        $request->user()->currentAccessToken()?->delete();
+
         return response()->json([
-            'message' => 'Выход выполнен успешно'
+            'message' => 'Выход выполнен успешно.',
         ]);
     }
 
     public function user(Request $request)
     {
-        return response()->json([
-            'user' => $request->user()->load('roles')
-        ]);
+        return response()->json($request->user()->load('roles'));
     }
 }

@@ -12,7 +12,7 @@ fi
 
 if [ ! -f "vendor/autoload.php" ]; then
   echo "[entrypoint] Installing PHP dependencies"
-  composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+  composer install --optimize-autoloader --no-interaction --prefer-dist
 fi
 
 if [ ! -f "node_modules/.package-lock.json" ] && [ ! -d "node_modules" ]; then

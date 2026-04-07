@@ -35,9 +35,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 WORKDIR /var/www/html
 
-# Копируем composer файлы и устанавливаем зависимости
+# Копируем composer файлы и устанавливаем зависимости.
+# Filament используется в рантайме, поэтому ставим полный набор зависимостей.
 COPY backend/composer.* ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer install --optimize-autoloader --no-scripts
 
 # Копируем package.json и устанавливаем Node зависимости
 COPY backend/package*.json ./

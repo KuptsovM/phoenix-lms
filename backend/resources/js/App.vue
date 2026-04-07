@@ -649,7 +649,7 @@ const toggleMenu = () => {
 
 .footer-links {
   display: flex;
-  gap: 1rem sm:1.5rem;
+  gap: 1rem;
   margin-top: 0.5rem;
   flex-wrap: wrap;
   justify-content: center;
@@ -662,6 +662,10 @@ const toggleMenu = () => {
 }
 
 @media (min-width: 640px) {
+  .footer-links {
+    gap: 1.5rem;
+  }
+
   .footer-link {
     font-size: 0.875rem;
   }

@@ -10,7 +10,10 @@ class LectureController extends Controller
 {
     public function index($courseId)
     {
-        $lectures = Lecture::where('course_id', $courseId)->get()->map(function ($lecture) {
+        $lectures = Lecture::where('course_id', $courseId)
+            ->withCount('materials')
+            ->get()
+            ->map(function ($lecture) {
             return [
                 'id' => $lecture->id,
                 'title' => $lecture->title,
@@ -18,7 +21,7 @@ class LectureController extends Controller
                 'content' => $lecture->content,
                 'status' => $lecture->status,
                 'course_id' => $lecture->course_id,
-                'materials_count' => $lecture->materials->count(),
+                'materials_count' => $lecture->materials_count,
             ];
         });
 
@@ -50,7 +53,7 @@ class LectureController extends Controller
 
     public function materials($lectureId)
     {
-        $lecture = Lecture::with(['materials'])->findOrFail($id);
+        $lecture = Lecture::with(['materials'])->findOrFail($lectureId);
         
         $materials = $lecture->materials->map(function ($material) {
             return [

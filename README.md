@@ -70,6 +70,42 @@ docker compose exec app npm run dev -- --host 0.0.0.0 --port 5173
 - Веб‑клиент: `http://localhost:8080`
 - API: `http://localhost:8080/api/*` (авторизация по Bearer‑токену Sanctum)
 
+## Скриншоты
+
+| Страница | Описание |
+|----------|----------|
+| ![Login](previews/login.png) | Страница входа с демо-аккаунтами |
+| ![Dashboard](previews/dashboard.png) | Дашборд студента со статистикой |
+| ![Courses](previews/courses.png) | Каталог курсов с фильтрами |
+| ![Course View](previews/course-view.png) | Просмотр курса с лекциями |
+| ![Teacher Dashboard](previews/teacher-dashboard.png) | Панель преподавателя |
+| ![Mega Menu](previews/mega-menu.png) | Мега-меню навигации |
+
 ## Troubleshooting
 - 500 при логине / сообщение «Неверный email или пароль» после изменений: убедись, что выполнены миграции (таблица `personal_access_tokens`) и очищены кеши `optimize:clear`.
 - Если Vite не отдает ассеты, собери `npm run build` и перезапусти контейнеры `docker compose restart web app`.
+
+## Возможности
+
+### 👨‍🎓 Студент
+- Просмотр каталога курсов с поиском и фильтрами
+- Обучение по лекциям с материалами
+- Прохождение тестов с подсчетом баллов
+- Отслеживание прогресса обучения
+
+### 👨‍🏫 Преподаватель
+- Создание и редактирование курсов
+- Добавление лекций и материалов
+- Создание тестов с вопросами
+- Просмотр статистики
+
+### 🔐 Безопасность
+- Аутентификация через Laravel Sanctum
+- Ролевая модель (Spatie Permissions)
+- Защита API роутов
+
+### 🎨 UI/UX
+- Современный дизайн на TailwindCSS
+- Адаптивная верстка (mobile-first)
+- Плавные анимации и transitions
+- Темная тема в header

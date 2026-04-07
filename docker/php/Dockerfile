@@ -23,7 +23,8 @@ RUN docker-php-ext-install \
     bcmath \
     gd \
     zip \
-    intl
+    intl \
+    opcache
 
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -48,6 +49,9 @@ COPY backend/ ./
 # Права доступа
 RUN chown -R www-data:www-data /var/www/html/storage \
     && chown -R www-data:www-data /var/www/html/bootstrap/cache
+
+# OPCache configuration
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 EXPOSE 9000
 

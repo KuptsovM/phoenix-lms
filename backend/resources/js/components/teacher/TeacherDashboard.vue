@@ -122,19 +122,19 @@
         <div 
           v-for="(activity, index) in recentActivities" 
           :key="activity.id"
-          class="flex items-center justify-between p-4 rounded-xl border border-slate-200/80 hover:border-sky-300 hover:bg-sky-50/30 transition-all duration-200"
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-xl border border-slate-200/80 hover:border-sky-300 hover:bg-sky-50/30 transition-all duration-200"
           :style="{ animationDelay: `${index * 0.05}s` }"
         >
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="getActivityBg(activity.type)">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0" :class="getActivityBg(activity.type)">
               <span v-html="getActivityIcon(activity.type)"></span>
             </div>
-            <div>
-              <div class="font-bold text-slate-800">{{ activity.title }}</div>
-              <div class="text-sm text-slate-500">{{ activity.description }}</div>
+            <div class="min-w-0">
+              <div class="font-bold text-slate-800 text-sm sm:text-base truncate">{{ activity.title }}</div>
+              <div class="text-sm text-slate-500 truncate">{{ activity.description }}</div>
             </div>
           </div>
-          <div class="text-sm text-slate-400 whitespace-nowrap">
+          <div class="text-xs sm:text-sm text-slate-400 whitespace-nowrap sm:ml-4">
             {{ formatDate(activity.created_at) }}
           </div>
         </div>
@@ -191,9 +191,9 @@ const recentActivities = ref([
 
 const getActivityIcon = (type) => {
   const icons = {
-    course: '<svg class="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>',
-    lecture: '<svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>',
-    test: '<svg class="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
+    course: '<svg class="w-5 h-5 sm:w-6 sm:h-6 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>',
+    lecture: '<svg class="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>',
+    test: '<svg class="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
   }
   return icons[type] || icons.course
 }

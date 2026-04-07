@@ -1,7 +1,7 @@
 <template>
   <div class="mega-panel text-white" @click="$emit('close')">
     <div class="mega-content" @click.stop>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <div class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3">
         <!-- Учёба -->
         <div class="mega-section">
           <div class="mega-section-header">
@@ -114,7 +114,7 @@ defineEmits(['close'])
   margin-top: 0.5rem;
   margin-bottom: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 24px;
+  border-radius: 16px;
   background: 
     radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
     radial-gradient(circle at 80% 10%, rgba(167, 139, 250, 0.12) 0%, transparent 35%),
@@ -126,8 +126,20 @@ defineEmits(['close'])
 
 .mega-content {
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 20px;
-  padding: 1.5rem;
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .mega-panel {
+    border-radius: 24px;
+    padding: 0.25rem;
+  }
+  
+  .mega-content {
+    border-radius: 20px;
+    padding: 1.5rem;
+  }
 }
 
 .mega-section {

@@ -3,35 +3,32 @@
     <!-- Header -->
     <header class="topbar">
       <div class="container mx-auto">
-        <div class="flex items-center justify-between gap-4 py-3">
+        <div class="flex items-center justify-between gap-2 sm:gap-4 py-2 sm:py-3">
           <!-- Logo -->
           <div class="brand-block">
             <router-link to="/" class="brand-link">
               <span class="brand-icon">🔥</span>
-              Phoenix LMS
+              <span class="brand-name">Phoenix LMS</span>
             </router-link>
-            <p class="brand-subtitle">Платформа для обучения</p>
           </div>
 
-          <!-- Navigation -->
-          <nav class="hidden md:flex items-center gap-1">
-            <router-link 
-              v-for="item in navItems" 
-              :key="item.to"
-              :to="item.to"
-              class="nav-item"
-              :class="{ 'nav-item--active': isActive(item.to) }"
-            >
-              <span v-html="item.icon" class="nav-icon"></span>
-              {{ item.label }}
-            </router-link>
-          </nav>
-
           <!-- Right side -->
-          <div class="flex items-center gap-3">
-            <!-- Catalog Button -->
+          <div class="flex items-center gap-2 md:gap-3">
+            <!-- Mobile Menu Button -->
             <button 
-              class="catalog-btn"
+              class="md:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors"
+              @click="mobileMenuOpen = !mobileMenuOpen"
+            >
+              <svg v-if="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <!-- Catalog Button (desktop) -->
+            <button 
+              class="hidden md:flex catalog-btn"
               @click="toggleMenu"
             >
               <span class="catalog-icon" :class="{ 'catalog-icon--open': menuOpen }">
@@ -97,7 +94,7 @@
           </div>
         </div>
 
-        <!-- Mega Menu -->
+        <!-- Mega Menu (desktop) -->
         <transition name="menu-fade">
           <MegaMenu
             v-if="menuOpen"
@@ -110,6 +107,115 @@
         </transition>
       </div>
     </header>
+
+    <!-- Mobile Menu Panel -->
+    <transition name="mobile-menu">
+      <div v-if="mobileMenuOpen" class="mobile-menu-overlay" @click="mobileMenuOpen = false">
+        <div class="mobile-menu" @click.stop>
+          <!-- Mobile User Info -->
+          <div v-if="user" class="mobile-user-section">
+            <div class="mobile-user-avatar">
+              {{ user.name.charAt(0).toUpperCase() }}
+            </div>
+            <div class="mobile-user-info">
+              <div class="mobile-user-name">{{ user.name }}</div>
+              <div class="mobile-user-email">{{ user.email }}</div>
+            </div>
+          </div>
+
+          <!-- Mobile Navigation -->
+          <nav class="mobile-nav">
+            <router-link 
+              v-for="item in navItems" 
+              :key="item.to"
+              :to="item.to"
+              class="mobile-nav-item"
+              :class="{ 'mobile-nav-item--active': isActive(item.to) }"
+              @click="mobileMenuOpen = false"
+            >
+              <span v-html="item.icon" class="mobile-nav-icon"></span>
+              {{ item.label }}
+            </router-link>
+
+            <div class="mobile-nav-divider"></div>
+
+            <!-- Study Items -->
+            <router-link 
+              v-for="item in studyItems"
+              :key="item.to"
+              :to="item.to"
+              class="mobile-nav-item mobile-nav-item--sub"
+              @click="mobileMenuOpen = false"
+            >
+              <span class="mobile-nav-icon" v-html="item.icon"></span>
+              {{ item.label }}
+            </router-link>
+
+            <!-- Teacher Items -->
+            <template v-if="authStore.isTeacher">
+              <div class="mobile-nav-divider"></div>
+              <div class="mobile-nav-label">Преподаватель</div>
+              <router-link 
+                v-for="item in teacherItems"
+                :key="item.to"
+                :to="item.to"
+                class="mobile-nav-item mobile-nav-item--sub"
+                @click="mobileMenuOpen = false"
+              >
+                <span class="mobile-nav-icon" v-html="item.icon"></span>
+                {{ item.label }}
+              </router-link>
+            </template>
+
+            <div class="mobile-nav-divider"></div>
+
+            <!-- Resources -->
+            <router-link 
+              v-for="item in resourceItems"
+              :key="item.to"
+              :to="item.to"
+              class="mobile-nav-item mobile-nav-item--sub"
+              @click="mobileMenuOpen = false"
+            >
+              <span class="mobile-nav-icon" v-html="item.icon"></span>
+              {{ item.label }}
+            </router-link>
+          </nav>
+
+          <!-- Mobile User Actions -->
+          <div class="mobile-actions">
+            <template v-if="user">
+              <router-link to="/dashboard" class="mobile-action-item" @click="mobileMenuOpen = false">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Личный кабинет
+              </router-link>
+              <router-link v-if="authStore.isTeacher" to="/teacher" class="mobile-action-item" @click="mobileMenuOpen = false">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Панель преподавателя
+              </router-link>
+              <button @click="handleLogout" class="mobile-action-item mobile-action-item--danger">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Выйти
+              </button>
+            </template>
+            <template v-else>
+              <router-link to="/login" class="mobile-action-item mobile-action-item--primary" @click="mobileMenuOpen = false">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Войти
+              </router-link>
+            </template>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <!-- Breadcrumb -->
     <div class="breadcrumb-bar" v-if="breadcrumbs.length > 1">
@@ -138,19 +244,19 @@
     </div>
 
     <!-- Main Content -->
-    <main class="container mx-auto p-4 md:p-6">
+    <main class="container mx-auto px-3 sm:px-4 py-4 md:p-6">
       <router-view />
     </main>
 
     <!-- Footer -->
     <footer class="footer">
-      <div class="container mx-auto">
+      <div class="container mx-auto px-4">
         <div class="footer-content">
           <div class="footer-brand">
             <span class="brand-icon">🔥</span>
             <span>Phoenix LMS</span>
           </div>
-          <p class="footer-text"><a href="https://github.com/KuptsovM/phoenix-lms">https://github.com/KuptsovM/phoenix-lms</a></p>
+          <p class="footer-text"><a href="https://github.com/KuptsovM/phoenix-lms" class="break-all">github.com/KuptsovM/phoenix-lms</a></p>
           <div class="footer-links">
             <a href="#" class="footer-link">О нас</a>
             <a href="#" class="footer-link">Поддержка</a>
@@ -174,6 +280,7 @@ const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
 const menuOpen = ref(false)
+const mobileMenuOpen = ref(false)
 
 const navItems = [
   { to: '/dashboard', label: 'Главная', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>' },
@@ -218,7 +325,12 @@ const isActive = (path) => {
 
 const logout = async () => {
   await authStore.logout()
+  mobileMenuOpen.value = false
   router.push('/login')
+}
+
+const handleLogout = async () => {
+  await logout()
 }
 
 const toggleMenu = () => {
@@ -499,7 +611,13 @@ const toggleMenu = () => {
   margin-top: auto;
   background: white;
   border-top: 1px solid #e2e8f0;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
+}
+
+@media (min-width: 640px) {
+  .footer {
+    padding: 2rem 0;
+  }
 }
 
 .footer-content {
@@ -520,19 +638,33 @@ const toggleMenu = () => {
 
 .footer-text {
   color: #64748b;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
+}
+
+@media (min-width: 640px) {
+  .footer-text {
+    font-size: 0.875rem;
+  }
 }
 
 .footer-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem sm:1.5rem;
   margin-top: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .footer-link {
   color: #64748b;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   transition: color 0.15s ease;
+}
+
+@media (min-width: 640px) {
+  .footer-link {
+    font-size: 0.875rem;
+  }
 }
 
 .footer-link:hover {
@@ -548,5 +680,198 @@ const toggleMenu = () => {
 .menu-fade-leave-to {
   opacity: 0;
   transform: translateY(-8px);
+}
+
+/* Mobile Menu */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-menu {
+  width: 100%;
+  max-width: 320px;
+  height: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.mobile-user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+}
+
+.mobile-user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.mobile-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-user-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.mobile-user-email {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-nav {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.mobile-nav-item:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.mobile-nav-item--active {
+  background: rgba(56, 189, 248, 0.1);
+  color: #0284c7;
+}
+
+.mobile-nav-item--sub {
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.mobile-nav-icon {
+  display: flex;
+  width: 20px;
+  height: 20px;
+}
+
+.mobile-nav-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 0.75rem 0;
+}
+
+.mobile-nav-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.mobile-actions {
+  padding: 1rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.mobile-action-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mobile-action-item:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.mobile-action-item--primary {
+  background: #0f172a;
+  color: white;
+}
+
+.mobile-action-item--primary:hover {
+  background: #1e293b;
+  color: white;
+}
+
+.mobile-action-item--danger {
+  color: #ef4444;
+}
+
+.mobile-action-item--danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Mobile Menu Animation */
+.mobile-menu-enter-active,
+.mobile-menu-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu-enter-from .mobile-menu,
+.mobile-menu-leave-to .mobile-menu {
+  transform: translateX(100%);
+}
+
+.mobile-menu-enter-from,
+.mobile-menu-leave-to {
+  background: transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .brand-name {
+    display: none;
+  }
+
+  .brand-link {
+    font-size: 1.25rem;
+  }
+
+  .user-name {
+    display: none;
+  }
 }
 </style>

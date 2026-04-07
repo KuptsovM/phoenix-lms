@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-2xl font-semibold mb-4">{{ test?.title }}</h2>
-    <p class="text-gray-600 mb-6">{{ test?.description }}</p>
-    <div class="text-center text-gray-500">
+  <div class="card p-4 sm:p-6">
+    <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mb-3 sm:mb-4">{{ test?.title }}</h2>
+    <p class="text-slate-500 mb-4 sm:mb-6">{{ test?.description }}</p>
+    <div class="text-center text-slate-400 py-8">
       Компонент просмотра теста будет реализован позже
     </div>
   </div>

@@ -1,74 +1,98 @@
 # Phoenix LMS
 
-Учебная платформа на Laravel 11 + Vue 3 (Pinia, Vite) с ролевой моделью (teacher/student/admin), API на Sanctum и готовыми Docker‑контейнерами для разработки.
+Phoenix LMS - учебная платформа на Laravel 11 + Vue 3 с ролями (student/teacher/admin), API на Sanctum и готовым Docker-окружением для локальной разработки.
 
-## Стек
-- Backend: Laravel 11, Sanctum, Spatie Permissions, PHP 8.4 (php-fpm)
-- Frontend: Vue 3, Pinia, Vue Router, Vite, TailwindCSS
-- Инфраструктура: Docker Compose (nginx + php-fpm + MySQL 8 + Redis)
+## Что внутри
+- Backend: Laravel 11, Sanctum, Spatie Permissions, PHP 8.4 (php-fpm)
+- Frontend: Vue 3, Pinia, Vue Router, Vite, TailwindCSS
+- Infra: Docker Compose (`nginx` + `app` + `mysql:8` + `redis`)
 
-## Быстрый старт (Docker)
-Требуется установленный Docker Desktop или совместимый runtime.
+## Требования
+- Docker Desktop (или совместимый Docker runtime)
+- Свободные порты: `8080` (web), `3307` (MySQL)
+
+## Быстрый старт
 
 ```bash
-# поднять контейнеры
-docker compose up -d
+# 1) Сборка и запуск контейнеров
+docker compose up --build -d
 
-# применить миграции и загрузить тестовые данные
-docker compose exec app php artisan migrate --seed
-
-# собрать фронтенд-ассеты (обязательно после первого запуска/изменений)
-docker compose exec app npm run build
+# 2) Проверка состояния
+docker compose ps
 ```
 
-После сборки открой `http://localhost:8080`.
+После первого запуска приложение само:
+- дождется готовности базы,
+- применит миграции,
+- загрузит сиды,
+- подготовит кеши Laravel.
 
-### Тестовые аккаунты
-- Admin: `admin@example.com` / `password`
-- Teacher: `teacher@example.com` / `password`
-- Student: `student@example.com` / `password`
-- Дополнительно: `superadmin@example.com`, `content@example.com`, `usermanager@example.com`, `rolemanager@example.com`, `user@example.com`, `test@example.com` (все с паролем `password`)
+Открыть в браузере: `http://localhost:8080`
 
-## Разработка с hot-reload
-Если нужен Vite HMR вместо сборки:
+## Тестовые аккаунты
+
+### Админка (Filament)
+- `superadmin@example.com` / `password`
+- `admin@example.com` / `password`
+- `content@example.com` / `password`
+- `usermanager@example.com` / `password`
+- `rolemanager@example.com` / `password`
+
+### Веб-приложение
+- `teacher@example.com` / `password`
+- `student@example.com` / `password`
+- `user@example.com` / `password`
+- `test@example.com` / `password`
+
+## Полезные команды
+
+```bash
+# Перезапуск контейнеров
+docker compose restart
+
+# Логи приложения
+docker compose logs -f app
+
+# Логи веб-сервера
+docker compose logs -f web
+
+# Выполнить artisan-команду
+docker compose exec app php artisan <command>
+
+# Прогнать тесты
+docker compose exec app php artisan test
+```
+
+## Разработка фронтенда (HMR)
+
+Если нужен Vite hot reload:
 
 ```bash
 docker compose exec app npm run dev -- --host 0.0.0.0 --port 5173
 ```
 
-И открой фронт по адресу, который выведет Vite (обычно `http://localhost:5173`). nginx в этом случае продолжит отдавать backend на `http://localhost:8080`.
+В этом режиме backend остается на `http://localhost:8080`, dev-сервер Vite обычно на `http://localhost:5173`.
 
-## Полезные команды
-- Очистить кеши после изменений конфигов/провайдеров:
-  ```bash
-  docker compose exec app php artisan optimize:clear
-  ```
-- Прогнать тесты:
-  ```bash
-  docker compose exec app php artisan test
-  ```
-- Запустить очередь (если понадобится фоновые задачи):
-  ```bash
-  docker compose exec app php artisan queue:listen
-  ```
+## Сброс окружения
 
-## Структура
-- `docker-compose.yml` — окружение nginx/php-fpm/mysql/redis
-- `docker/php/Dockerfile` — сборка php-fpm c Node и Composer
-- `backend/` — Laravel + Vue (ресурсы в `backend/resources/js`, стили в `backend/resources/css`)
-- `backend/routes/api.php` — API для фронтенда
-- `backend/app/Providers/AppServiceProvider.php` — настройка rate limiter `api`
-- `backend/database/seeders/DatabaseSeeder.php` — создание ролей, пользователей, курсов
+```bash
+# Полный пересозданный старт (включая volume с БД)
+docker compose down -v
+docker compose up --build -d
+```
 
-## Типичный цикл разработки
-1. Внести изменения в backend или frontend.
-2. Для backend достаточно `docker compose exec app php artisan optimize:clear` (если менялись провайдеры/роутинги).
-3. Для frontend — `docker compose exec app npm run build` или держать `npm run dev`.
-4. Обновить страницу в браузере (hard refresh для ассетов: `Ctrl+F5`).
+## Структура проекта
+- `docker-compose.yml` - описание Docker-окружения
+- `docker/php/Dockerfile` - сборка образа PHP + Node + Composer
+- `docker/php/entrypoint.sh` - автоинициализация Laravel при старте контейнера
+- `backend/` - Laravel-приложение и фронтенд-ресурсы
+- `backend/database/seeders/DatabaseSeeder.php` - тестовые роли, пользователи и учебные данные
 
-## Точки входа
-- Веб‑клиент: `http://localhost:8080`
-- API: `http://localhost:8080/api/*` (авторизация по Bearer‑токену Sanctum)
+## Troubleshooting
+- **502 при старте**: подождите 10-30 секунд и проверьте `docker compose ps` (контейнер `app` должен быть `healthy`).
+- **Ошибка БД**: выполните `docker compose down -v` и запустите заново через `docker compose up --build -d`.
+- **Проблемы с ассетами**: `docker compose exec app npm run build`, затем `docker compose restart web`.
+- **Кеш Laravel**: `docker compose exec app php artisan optimize:clear`.
 
 ## Скриншоты
 
@@ -80,32 +104,3 @@ docker compose exec app npm run dev -- --host 0.0.0.0 --port 5173
 | ![Course View](previews/course-view.png) | Просмотр курса с лекциями |
 | ![Teacher Dashboard](previews/teacher-dashboard.png) | Панель преподавателя |
 | ![Mega Menu](previews/mega-menu.png) | Мега-меню навигации |
-
-## Troubleshooting
-- 500 при логине / сообщение «Неверный email или пароль» после изменений: убедись, что выполнены миграции (таблица `personal_access_tokens`) и очищены кеши `optimize:clear`.
-- Если Vite не отдает ассеты, собери `npm run build` и перезапусти контейнеры `docker compose restart web app`.
-
-## Возможности
-
-### 👨‍🎓 Студент
-- Просмотр каталога курсов с поиском и фильтрами
-- Обучение по лекциям с материалами
-- Прохождение тестов с подсчетом баллов
-- Отслеживание прогресса обучения
-
-### 👨‍🏫 Преподаватель
-- Создание и редактирование курсов
-- Добавление лекций и материалов
-- Создание тестов с вопросами
-- Просмотр статистики
-
-### 🔐 Безопасность
-- Аутентификация через Laravel Sanctum
-- Ролевая модель (Spatie Permissions)
-- Защита API роутов
-
-### 🎨 UI/UX
-- Современный дизайн на TailwindCSS
-- Адаптивная верстка (mobile-first)
-- Плавные анимации и transitions
-- Темная тема в header

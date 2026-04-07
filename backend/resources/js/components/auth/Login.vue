@@ -139,8 +139,8 @@ const handleLogin = async () => {
 
 .auth-card {
   width: min(100%, 760px);
-  padding: 2rem;
-  border-radius: 28px;
+  padding: 1.5rem;
+  border-radius: 20px;
   background:
     radial-gradient(circle at top right, rgba(14, 165, 233, 0.16), transparent 28%),
     radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.16), transparent 30%),
@@ -148,6 +148,13 @@ const handleLogin = async () => {
   border: 1px solid rgba(148, 163, 184, 0.22);
   box-shadow: 0 28px 80px rgba(15, 23, 42, 0.12);
   backdrop-filter: blur(14px);
+}
+
+@media (min-width: 640px) {
+  .auth-card {
+    padding: 2rem;
+    border-radius: 28px;
+  }
 }
 
 .auth-copy h1 {

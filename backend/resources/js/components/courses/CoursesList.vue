@@ -10,7 +10,7 @@
       </div>
       
       <!-- View Toggle & Filter -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 flex-wrap">
         <div class="view-toggle">
           <button 
             class="view-btn" 
@@ -32,26 +32,27 @@
           </button>
         </div>
         
-        <select v-model="statusFilter" class="input-field max-w-[180px]">
-          <option value="">Все статусы</option>
-          <option value="published">Опубликованные</option>
+        <select v-model="statusFilter" class="input-field max-w-[140px] sm:max-w-[180px] text-sm">
+          <option value="">Все</option>
+          <option value="published">Опубликов.</option>
           <option value="draft">Черновики</option>
         </select>
         
-        <select v-model="sortBy" class="input-field max-w-[180px]">
-          <option value="newest">Сначала новые</option>
-          <option value="oldest">Сначала старые</option>
+        <select v-model="sortBy" class="input-field max-w-[130px] sm:max-w-[180px] text-sm">
+          <option value="newest">Новые</option>
+          <option value="oldest">Старые</option>
           <option value="title">По названию</option>
         </select>
       </div>
     </div>
 
     <!-- Stats Bar -->
-    <div class="card p-4 mb-6 flex flex-wrap items-center justify-between gap-4 animate-slide-up">
-      <div class="flex items-center gap-6 text-sm">
+    <div class="card p-3 sm:p-4 mb-6 flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4 animate-slide-up">
+      <!-- Stats - скрываем на маленьких экранах -->
+      <div class="hidden sm:flex items-center gap-4 lg:gap-6 text-sm">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-          <span class="text-slate-600">Всего курсов: <strong class="text-slate-800">{{ filteredCourses.length }}</strong></span>
+          <span class="text-slate-600">Всего: <strong class="text-slate-800">{{ filteredCourses.length }}</strong></span>
         </div>
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -63,15 +64,20 @@
         </div>
       </div>
       
-      <div class="search-box">
-        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Mobile Stats Counter -->
+      <div class="sm:hidden flex items-center gap-3 text-sm">
+        <span class="text-slate-600">Найдено: <strong class="text-slate-800">{{ filteredCourses.length }}</strong></span>
+      </div>
+      
+      <div class="search-box w-full sm:w-auto">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         <input 
           v-model="searchQuery"
           type="text" 
-          placeholder="Поиск курсов..."
-          class="search-input"
+          placeholder="Поиск..."
+          class="search-input min-w-0 flex-1 sm:w-32 md:w-40"
         />
       </div>
     </div>

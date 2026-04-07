@@ -64,11 +64,31 @@
         </div>
       </div>
 
+      <!-- Mobile Toggle Button -->
+      <button 
+        class="lg:hidden w-full mb-4 flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 shadow-sm"
+        @click="showSidebar = !showSidebar"
+      >
+        <span class="font-semibold text-slate-800 flex items-center gap-2">
+          <svg class="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+          Содержание курса
+        </span>
+        <svg 
+          class="w-5 h-5 text-slate-400 transition-transform" 
+          :class="{ 'rotate-180': showSidebar }"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
       <!-- Навигация по курсу -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Содержание курса -->
-        <div class="lg:col-span-1">
-          <div class="card p-6 sticky top-24">
+        <div class="lg:col-span-1" :class="{ 'hidden lg:block': !showSidebar }">
+          <div class="card p-4 md:p-6 lg:sticky lg:top-24">
             <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
               <svg class="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -231,6 +251,7 @@ const loading = ref(true)
 const selectedLecture = ref(null)
 const selectedTest = ref(null)
 const testStarted = ref(false)
+const showSidebar = ref(false)
 
 const course = computed(() => courseStore.currentCourse)
 const lectures = computed(() => courseStore.lectures)

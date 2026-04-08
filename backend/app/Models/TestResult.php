@@ -12,13 +12,16 @@ class TestResult extends Model
     protected $fillable = [
         'score',
         'total_points',
+        'percentage',
         'user_id',
         'test_id',
         'answers',
+        'completed_at',
     ];
 
     protected $casts = [
         'answers' => 'array',
+        'completed_at' => 'datetime',
     ];
 
     public function user()

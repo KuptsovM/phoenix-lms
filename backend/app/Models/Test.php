@@ -14,8 +14,14 @@ class Test extends Model
         'description',
         'duration',
         'difficulty',
+        'status',
         'questions_count',
         'course_id',
+    ];
+
+    protected $casts = [
+        'duration' => 'integer',
+        'questions_count' => 'integer',
     ];
 
     public function course()
@@ -31,5 +37,10 @@ class Test extends Model
     public function results()
     {
         return $this->hasMany(TestResult::class);
+    }
+
+    public function attempts()
+    {
+        return $this->hasMany(TestAttempt::class);
     }
 }

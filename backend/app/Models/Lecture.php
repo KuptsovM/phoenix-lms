@@ -17,9 +17,7 @@ class Lecture extends Model
         'course_id',
     ];
 
-    protected $casts = [
-        'content' => 'array',
-    ];
+    protected $casts = [];
 
     public function course()
     {
@@ -29,5 +27,10 @@ class Lecture extends Model
     public function materials()
     {
         return $this->hasMany(LectureMaterial::class);
+    }
+
+    public function views()
+    {
+        return $this->hasMany(LectureView::class);
     }
 }

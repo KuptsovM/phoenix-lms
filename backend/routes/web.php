@@ -2,7 +2,5 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Главная страница - Vue приложение
-Route::get('/{vue?}', function () {
-    return view('app');
-})->where('vue', '.*');
+// Web routes are not used — the Vue SPA is served by Nginx directly.
+// This file is kept for Laravel's artisan route:cache to work cleanly.

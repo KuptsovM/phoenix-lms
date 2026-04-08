@@ -5,6 +5,10 @@ cd /var/www/html
 
 echo "[entrypoint] Preparing Laravel app..."
 
+mkdir -p storage/framework/{cache,sessions,testing,views} storage/logs bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R ug+rwX storage bootstrap/cache
+
 if [ ! -f ".env" ]; then
   echo "[entrypoint] .env not found, copying from .env.example"
   cp .env.example .env
@@ -15,20 +19,13 @@ if [ ! -f "vendor/autoload.php" ]; then
   composer install --optimize-autoloader --no-interaction --prefer-dist
 fi
 
-if [ ! -f "node_modules/.package-lock.json" ] && [ ! -d "node_modules" ]; then
-  echo "[entrypoint] Installing Node dependencies"
-  npm install --no-audit --no-fund
-fi
-
-if [ ! -f "public/build/manifest.json" ]; then
-  echo "[entrypoint] Frontend assets not found, building with Vite"
-  npm run build
-fi
-
 if ! grep -q "^APP_KEY=base64:" .env; then
   echo "[entrypoint] Generating APP_KEY"
   php artisan key:generate --force
 fi
+
+echo "[entrypoint] Clearing stale caches..."
+php artisan optimize:clear
 
 echo "[entrypoint] Waiting for DB connection..."
 max_retries=30
@@ -48,7 +45,6 @@ php artisan migrate --force
 php artisan db:seed --force
 
 echo "[entrypoint] Caching config and routes..."
-php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache || true
 

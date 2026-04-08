@@ -20,7 +20,7 @@ class TestQuestion extends Model
 
     protected $casts = [
         'options' => 'array',
-        'correct_answer' => 'array',
+        'points' => 'integer',
     ];
 
     public function test()

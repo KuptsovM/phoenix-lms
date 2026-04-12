@@ -104,7 +104,7 @@ class DatabaseSeeder extends Seeder
         $superAdmin = User::query()->updateOrCreate(
             ['email' => 'superadmin@example.com'],
             [
-                'name' => 'Super Admin',
+                'name' => 'Иванов Иван Иванович',
                 'password' => 'password',
             ],
         );
@@ -114,7 +114,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::query()->updateOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'Admin',
+                'name' => 'Смирнов Алексей Петрович',
                 'password' => 'password',
             ],
         );
@@ -124,7 +124,7 @@ class DatabaseSeeder extends Seeder
         $contentManager = User::query()->updateOrCreate(
             ['email' => 'content@example.com'],
             [
-                'name' => 'Content Manager',
+                'name' => 'Кузнецова Мария Владимировна',
                 'password' => 'password',
             ],
         );
@@ -134,7 +134,7 @@ class DatabaseSeeder extends Seeder
         $userManager = User::query()->updateOrCreate(
             ['email' => 'usermanager@example.com'],
             [
-                'name' => 'User Manager',
+                'name' => 'Соколов Дмитрий Андреевич',
                 'password' => 'password',
             ],
         );
@@ -144,7 +144,7 @@ class DatabaseSeeder extends Seeder
         $roleManager = User::query()->updateOrCreate(
             ['email' => 'rolemanager@example.com'],
             [
-                'name' => 'Role Manager',
+                'name' => 'Попова Анна Сергеевна',
                 'password' => 'password',
             ],
         );
@@ -154,7 +154,7 @@ class DatabaseSeeder extends Seeder
         User::query()->updateOrCreate(
             ['email' => 'user@example.com'],
             [
-                'name' => 'Regular User',
+                'name' => 'Лебедев Максим Игоревич',
                 'password' => 'password',
             ],
         );
@@ -163,7 +163,7 @@ class DatabaseSeeder extends Seeder
         User::query()->updateOrCreate(
             ['email' => 'test@example.com'],
             [
-                'name' => 'Test User',
+                'name' => 'Козлов Илья Николаевич',
                 'password' => 'password',
             ],
         );
@@ -172,7 +172,7 @@ class DatabaseSeeder extends Seeder
         $teacher = User::query()->updateOrCreate(
             ['email' => 'teacher@example.com'],
             [
-                'name' => 'Teacher User',
+                'name' => 'Новикова Екатерина Михайловна',
                 'password' => 'password',
             ],
         );
@@ -182,67 +182,147 @@ class DatabaseSeeder extends Seeder
         $student = User::query()->updateOrCreate(
             ['email' => 'student@example.com'],
             [
-                'name' => 'Student User',
+                'name' => 'Морозов Роман Викторович',
                 'password' => 'password',
             ],
         );
         $student->syncRoles([$studentRole]);
 
         // ============================================
-        // СОЗДАНИЕ ТЕСТОВЫХ КУРСОВ
+        // СОЗДАНИЕ ДЕМОНСТРАЦИОННОГО КУРСА И ТЕСТОВЫХ ДАННЫХ
         // ============================================
         if (Course::query()->count() === 0) {
-            Course::factory()->count(8)->create([
-                'author_id' => $admin->id,
+            $demoCourse = Course::create([
+                'title' => 'Основы веб-разработки на Laravel',
+                'slug' => 'osnovy-web-razrabotki-na-laravel',
+                'description' => 'Полноценный практический курс по созданию современных веб-приложений с использованием фреймворка Laravel. В курсе рассматриваются архитектура MVC, работа с базами данных, маршрутизация и многое другое.',
+                'status' => 'published',
+                'is_featured' => true,
+                'published_at' => now(),
+                'author_id' => $teacher->id,
             ]);
-        }
 
-        // ============================================
-        // СОЗДАНИЕ ТЕСТОВЫХ ЛЕКЦИЙ И ТЕСТОВ
-        // ============================================
-        $courses = Course::all();
-        
-        foreach ($courses as $course) {
-            // Создаем 3-5 лекций для каждого курса
-            for ($i = 1; $i <= rand(3, 5); $i++) {
-                $lecture = Lecture::create([
-                    'title' => "Лекция {$i}: " . $this->getRandomLectureTitle(),
-                    'description' => "Описание лекции {$i} для курса {$course->title}",
-                    'content' => $this->getRandomLectureContent(),
-                    'status' => 'published',
-                    'course_id' => $course->id,
-                    'order' => $i,
-                ]);
+            // Лекция 1
+            $lecture1 = Lecture::create([
+                'title' => 'Введение в архитектуру MVC',
+                'description' => 'Изучение паттерна Model-View-Controller и его реализации в Laravel.',
+                'content' => "<h2>Что такое MVC?</h2>\n<p>MVC (Model-View-Controller) — это архитектурный паттерн, разделяющий приложение на три основных компонента:</p>\n<ul>\n<li><strong>Модель (Model)</strong>: отвечает за бизнес-логику и работу с данными.</li>\n<li><strong>Представление (View)</strong>: отвечает за отображение данных пользователю.</li>\n<li><strong>Контроллер (Controller)</strong>: связывает модель и представление, обрабатывая пользовательский ввод.</li>\n</ul>\n<p>В Laravel этот паттерн реализован на базовом уровне и является стандартом для разработки.</p>",
+                'status' => 'published',
+                'course_id' => $demoCourse->id,
+                'order' => 1,
+            ]);
 
-                // Добавляем 1-2 материала к каждой лекции
-                for ($j = 1; $j <= rand(1, 2); $j++) {
+            LectureMaterial::create([
+                'title' => 'Презентация: Паттерн MVC',
+                'file_url' => '/materials/mvc_presentation.pdf',
+                'file_size' => '2048 KB',
+                'file_type' => 'PDF',
+                'lecture_id' => $lecture1->id,
+            ]);
+
+            // Лекция 2
+            $lecture2 = Lecture::create([
+                'title' => 'Маршрутизация (Routing)',
+                'description' => 'Как работает система маршрутизации в Laravel и как создавать RESTful API.',
+                'content' => "<h2>Основы маршрутизации</h2>\n<p>Маршрутизация в Laravel осуществляется в файлах папки <code>routes</code>. Основные веб-маршруты описываются в <code>routes/web.php</code>.</p>\n<p>Пример простейшего маршрута:</p>\n<pre><code>Route::get('/hello', function () {\n    return 'Hello, World!';\n});</code></pre>\n<p>Также Laravel поддерживает параметры в маршрутах, именованные маршруты и группы маршрутов для удобной организации кода.</p>",
+                'status' => 'published',
+                'course_id' => $demoCourse->id,
+                'order' => 2,
+            ]);
+
+            LectureMaterial::create([
+                'title' => 'Справочник по маршрутам',
+                'file_url' => '/materials/routing_cheatsheet.pdf',
+                'file_size' => '1024 KB',
+                'file_type' => 'PDF',
+                'lecture_id' => $lecture2->id,
+            ]);
+
+            // Тест для демо-курса
+            $test1 = Test::create([
+                'title' => 'Итоговый тест по основам Laravel',
+                'description' => 'Проверьте свои знания по архитектуре MVC и маршрутизации.',
+                'duration' => 30,
+                'difficulty' => 'medium',
+                'questions_count' => 3,
+                'course_id' => $demoCourse->id,
+            ]);
+
+            // Вопрос 1
+            TestQuestion::create([
+                'question' => 'За что отвечает буква M в аббревиатуре MVC?',
+                'type' => 'multiple_choice',
+                'options' => json_encode(['Маршрутизация (Middleware)', 'Модель (Model)', 'Модуль (Module)', 'Метод (Method)']),
+                'correct_answer' => 'Модель (Model)',
+                'points' => 1,
+                'test_id' => $test1->id,
+            ]);
+
+            // Вопрос 2
+            TestQuestion::create([
+                'question' => 'В каком файле по умолчанию объявляются веб-маршруты в Laravel?',
+                'type' => 'multiple_choice',
+                'options' => json_encode(['routes/api.php', 'app/Http/routes.php', 'routes/web.php', 'config/routes.php']),
+                'correct_answer' => 'routes/web.php',
+                'points' => 1,
+                'test_id' => $test1->id,
+            ]);
+
+            // Вопрос 3
+            TestQuestion::create([
+                'question' => 'Паттерн MVC разделяет приложение на Модель, Представление и Контроллер. Правда ли это?',
+                'type' => 'boolean',
+                'correct_answer' => 'true',
+                'points' => 1,
+                'test_id' => $test1->id,
+            ]);
+
+            // ============================================
+            // СОЗДАНИЕ ОСТАЛЬНЫХ ТЕСТОВЫХ КУРСОВ (ЧЕРЕЗ ФАБРИКУ)
+            // ============================================
+            Course::factory()->count(5)->create([
+                'author_id' => $teacher->id,
+            ]);
+
+            $courses = Course::where('id', '!=', $demoCourse->id)->get();
+            
+            foreach ($courses as $course) {
+                // Создаем 2-3 лекции для каждого сгенерированного курса
+                for ($i = 1; $i <= rand(2, 3); $i++) {
+                    $lecture = Lecture::create([
+                        'title' => "Лекция {$i}: " . $this->getRandomLectureTitle(),
+                        'description' => "Описание лекции {$i} для курса {$course->title}",
+                        'content' => $this->getRandomLectureContent(),
+                        'status' => 'published',
+                        'course_id' => $course->id,
+                        'order' => $i,
+                    ]);
+
                     LectureMaterial::create([
-                        'title' => "Материал {$j} для лекции {$i}",
-                        'file_url' => "/materials/lecture_{$lecture->id}_material_{$j}.pdf",
+                        'title' => "Дополнительный материал к лекции {$i}",
+                        'file_url' => "/materials/lecture_{$lecture->id}_material.pdf",
                         'file_size' => rand(100, 5000) . ' KB',
                         'file_type' => 'PDF',
                         'lecture_id' => $lecture->id,
                     ]);
                 }
-            }
 
-            // Создаем 1-2 теста для каждого курса
-            for ($i = 1; $i <= rand(1, 2); $i++) {
+                // Создаем 1 тест
                 $test = Test::create([
-                    'title' => "Тест {$i} по курсу {$course->title}",
-                    'description' => "Проверка знаний по материалам курса",
-                    'duration' => rand(20, 60),
+                    'title' => "Проверочный тест по курсу {$course->title}",
+                    'description' => "Оцените свои знания по пройденному материалу.",
+                    'duration' => rand(15, 45),
                     'difficulty' => ['easy', 'medium', 'hard'][rand(0, 2)],
-                    'questions_count' => rand(5, 15),
+                    'questions_count' => rand(3, 5),
                     'course_id' => $course->id,
                 ]);
 
-                // Создаем вопросы для теста
+                // Вопросы для теста
                 for ($j = 1; $j <= $test->questions_count; $j++) {
-                    $questionType = ['multiple_choice', 'boolean', 'text'][rand(0, 2)];
+                    $questionType = ['multiple_choice', 'boolean'][rand(0, 1)];
                     
                     $question = TestQuestion::create([
-                        'question' => "Вопрос {$j} для теста {$i}",
+                        'question' => "Вопрос {$j} для проверки усвоения материала",
                         'type' => $questionType,
                         'correct_answer' => $this->getCorrectAnswer($questionType),
                         'points' => 1,
@@ -251,8 +331,8 @@ class DatabaseSeeder extends Seeder
 
                     if ($questionType === 'multiple_choice') {
                         $question->update([
-                            'options' => json_encode(['Вариант 1', 'Вариант 2', 'Вариант 3', 'Вариант 4']),
-                            'correct_answer' => 'Вариант 1',
+                            'options' => json_encode(['Вариант А', 'Вариант Б', 'Вариант В', 'Вариант Г']),
+                            'correct_answer' => 'Вариант А',
                         ]);
                     }
                 }
@@ -262,22 +342,24 @@ class DatabaseSeeder extends Seeder
         // ============================================
         // ВЫВОД ИНФОРМАЦИИ
         // ============================================
-        $this->command->info('=== Тестовые данные для Filament Admin созданы ===');
+        $this->command->info('=== Тестовые данные для системы созданы ===');
+        $this->command->info('');
+        $this->command->info('Демонстрационный курс: "Основы веб-разработки на Laravel" (с лекциями и тестами)');
         $this->command->info('');
         $this->command->info('Пользователи с доступом к админке:');
-        $this->command->info('  - superadmin@example.com / password (Super Admin - полный доступ)');
-        $this->command->info('  - admin@example.com / password (Admin - полный доступ)');
-        $this->command->info('  - content@example.com / password (Content Manager - только курсы)');
-        $this->command->info('  - usermanager@example.com / password (User Manager - только пользователи)');
-        $this->command->info('  - rolemanager@example.com / password (Role Manager - только роли и права)');
+        $this->command->info('  - superadmin@example.com / password (Иванов И.И. - полный доступ)');
+        $this->command->info('  - admin@example.com / password (Смирнов А.П. - полный доступ)');
+        $this->command->info('  - content@example.com / password (Кузнецова М.В. - только курсы)');
+        $this->command->info('  - usermanager@example.com / password (Соколов Д.А. - только пользователи)');
+        $this->command->info('  - rolemanager@example.com / password (Попова А.С. - только роли и права)');
         $this->command->info('');
         $this->command->info('Пользователи без доступа к админке:');
-        $this->command->info('  - user@example.com / password');
-        $this->command->info('  - test@example.com / password');
+        $this->command->info('  - user@example.com / password (Лебедев М.И.)');
+        $this->command->info('  - test@example.com / password (Козлов И.Н.)');
         $this->command->info('');
-        $this->command->info('Пользователи для Vue приложения:');
-        $this->command->info('  - teacher@example.com / password (Teacher - преподаватель)');
-        $this->command->info('  - student@example.com / password (Student - студент)');
+        $this->command->info('Пользователи для платформы обучения:');
+        $this->command->info('  - teacher@example.com / password (Новикова Е.М. - преподаватель, автор курса)');
+        $this->command->info('  - student@example.com / password (Морозов Р.В. - студент)');
         $this->command->info('');
     }
 
@@ -339,11 +421,11 @@ class DatabaseSeeder extends Seeder
     {
         switch ($type) {
             case 'multiple_choice':
-                return 'Вариант 1';
+                return 'Вариант А';
             case 'boolean':
                 return 'true';
             case 'text':
-                return 'Правильный ответ на текстовый вопрос';
+                return 'Правильный ответ на вопрос';
             default:
                 return '';
         }

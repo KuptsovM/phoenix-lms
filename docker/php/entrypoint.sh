@@ -24,9 +24,6 @@ if ! grep -q "^APP_KEY=base64:" .env; then
   php artisan key:generate --force
 fi
 
-echo "[entrypoint] Clearing stale caches..."
-php artisan optimize:clear
-
 echo "[entrypoint] Waiting for DB connection..."
 max_retries=30
 retry=1
@@ -43,6 +40,9 @@ done
 echo "[entrypoint] Running migrations and seeders..."
 php artisan migrate --force
 php artisan db:seed --force
+
+echo "[entrypoint] Clearing stale caches..."
+php artisan optimize:clear
 
 echo "[entrypoint] Caching config and routes..."
 php artisan config:cache

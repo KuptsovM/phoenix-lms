@@ -28,7 +28,7 @@ docker compose up
 
 Приложение будет доступно на [http://localhost:8080](http://localhost:8080).
 
-> Nginx собирает фронтенд при билде образа (multi-stage build) и сразу раздаёт статику.  
+
 > PHP-FPM обрабатывает только `/api/*` и `/sanctum/*`.
 
 ## Локальная разработка фронтенда
@@ -36,7 +36,7 @@ docker compose up
 ```bash
 cd frontend
 npm install
-npm run dev      # Vite dev server на :5173 с proxy на :8080
+npm run dev
 ```
 
 При локальном запуске (`npm run dev`) запросы к `/api/` проксируются на `http://localhost:8080` (Docker).

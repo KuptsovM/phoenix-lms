@@ -244,6 +244,39 @@
         </div>
       </div>
 
+      <!-- Recommended Courses -->
+      <div v-if="recommendedCourses.length > 0" class="mb-8 mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+            Рекомендуемые курсы
+          </h2>
+          <router-link to="/courses" class="text-sm text-indigo-500 hover:text-indigo-700 font-medium flex items-center gap-1 transition-colors">
+            Все курсы
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+          </router-link>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <router-link
+            v-for="(course, i) in recommendedCourses"
+            :key="course.id"
+            :to="`/courses/${course.id}`"
+            class="course-progress-card hover:border-indigo-400 p-4 animate-slide-up flex flex-col justify-between shadow-sm"
+            :style="{ animationDelay: `${i * 0.06}s` }"
+          >
+            <div>
+              <h3 class="font-bold text-slate-800 text-base line-clamp-2 mb-2">{{ course.title }}</h3>
+              <p class="text-slate-500 text-xs line-clamp-3 mb-3">{{ course.description }}</p>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-400 mt-auto pt-3 border-t border-slate-100">
+              <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg> {{ course.lectures_count }}</span>
+              <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7 8H5a2 2 0 00-2 2v8a2 2 0 002 2h14a2 2 0 002-2v-8a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> {{ course.tests_count }}</span>
+            </div>
+          </router-link>
+        </div>
+      </div>
+
     </template>
   </div>
 </template>
@@ -272,6 +305,7 @@ const stats = computed(() => studentStore.dashboard?.stats ?? {
 const continueLearning = computed(() => studentStore.dashboard?.continue_learning)
 const activeCourses    = computed(() => studentStore.dashboard?.active_courses ?? [])
 const recentResults    = computed(() => studentStore.dashboard?.recent_results ?? [])
+const recommendedCourses = computed(() => studentStore.dashboard?.recommended_courses ?? [])
 
 const continueProgress = computed(() => {
   const cl = continueLearning.value

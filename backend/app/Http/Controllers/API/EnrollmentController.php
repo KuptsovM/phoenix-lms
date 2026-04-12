@@ -216,6 +216,21 @@ class EnrollmentController extends Controller
             ->sortByDesc('last_accessed_at')
             ->first();
 
+        // Recommended courses (published, not enrolled)
+        $recommendedCourses = Course::where('status', 'published')
+            ->whereNotIn('id', $courseIds)
+            ->withCount(['lectures', 'tests'])
+            ->orderBy('created_at', 'desc')
+            ->limit(4)
+            ->get()
+            ->map(fn($c) => [
+                'id' => $c->id,
+                'title' => $c->title,
+                'description' => $c->description,
+                'lectures_count' => $c->lectures_count,
+                'tests_count' => $c->tests_count,
+            ]);
+
         return response()->json([
             'stats' => [
                 'enrolled_courses' => $enrollments->count(),
@@ -233,6 +248,7 @@ class EnrollmentController extends Controller
             ] : null,
             'active_courses' => $activeCourses,
             'recent_results' => $recentResults,
+            'recommended_courses' => $recommendedCourses,
         ]);
     }
 }

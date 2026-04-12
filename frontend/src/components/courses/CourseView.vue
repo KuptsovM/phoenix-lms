@@ -800,6 +800,7 @@ onBeforeUnmount(async () => {
 .prose :deep(li) { margin-bottom: 0.5em; }
 .prose :deep(code) { background: #f1f5f9; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; }
 .prose :deep(pre) { background: #1e293b; color: #e2e8f0; padding: 1em; border-radius: 8px; overflow-x: auto; margin: 1em 0; }
+.prose :deep(pre code) { background: transparent; padding: 0; color: inherit; }
 .prose :deep(blockquote) { border-left: 4px solid #e2e8f0; padding-left: 1rem; color: #64748b; margin: 1em 0; }
 
 .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }

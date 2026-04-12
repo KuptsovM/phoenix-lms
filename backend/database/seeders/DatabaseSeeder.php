@@ -244,6 +244,7 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Проверьте свои знания по архитектуре MVC и маршрутизации.',
                 'duration' => 30,
                 'difficulty' => 'medium',
+                'status' => 'published',
                 'questions_count' => 3,
                 'course_id' => $demoCourse->id,
             ]);
@@ -276,67 +277,6 @@ class DatabaseSeeder extends Seeder
                 'points' => 1,
                 'test_id' => $test1->id,
             ]);
-
-            // ============================================
-            // СОЗДАНИЕ ОСТАЛЬНЫХ ТЕСТОВЫХ КУРСОВ (ЧЕРЕЗ ФАБРИКУ)
-            // ============================================
-            Course::factory()->count(5)->create([
-                'author_id' => $teacher->id,
-            ]);
-
-            $courses = Course::where('id', '!=', $demoCourse->id)->get();
-            
-            foreach ($courses as $course) {
-                // Создаем 2-3 лекции для каждого сгенерированного курса
-                for ($i = 1; $i <= rand(2, 3); $i++) {
-                    $lecture = Lecture::create([
-                        'title' => "Лекция {$i}: " . $this->getRandomLectureTitle(),
-                        'description' => "Описание лекции {$i} для курса {$course->title}",
-                        'content' => $this->getRandomLectureContent(),
-                        'status' => 'published',
-                        'course_id' => $course->id,
-                        'order' => $i,
-                    ]);
-
-                    LectureMaterial::create([
-                        'title' => "Дополнительный материал к лекции {$i}",
-                        'file_url' => "/materials/lecture_{$lecture->id}_material.pdf",
-                        'file_size' => rand(100, 5000) . ' KB',
-                        'file_type' => 'PDF',
-                        'lecture_id' => $lecture->id,
-                    ]);
-                }
-
-                // Создаем 1 тест
-                $test = Test::create([
-                    'title' => "Проверочный тест по курсу {$course->title}",
-                    'description' => "Оцените свои знания по пройденному материалу.",
-                    'duration' => rand(15, 45),
-                    'difficulty' => ['easy', 'medium', 'hard'][rand(0, 2)],
-                    'questions_count' => rand(3, 5),
-                    'course_id' => $course->id,
-                ]);
-
-                // Вопросы для теста
-                for ($j = 1; $j <= $test->questions_count; $j++) {
-                    $questionType = ['multiple_choice', 'boolean'][rand(0, 1)];
-                    
-                    $question = TestQuestion::create([
-                        'question' => "Вопрос {$j} для проверки усвоения материала",
-                        'type' => $questionType,
-                        'correct_answer' => $this->getCorrectAnswer($questionType),
-                        'points' => 1,
-                        'test_id' => $test->id,
-                    ]);
-
-                    if ($questionType === 'multiple_choice') {
-                        $question->update([
-                            'options' => json_encode(['Вариант А', 'Вариант Б', 'Вариант В', 'Вариант Г']),
-                            'correct_answer' => 'Вариант А',
-                        ]);
-                    }
-                }
-            }
         }
 
         // ============================================
